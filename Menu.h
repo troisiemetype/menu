@@ -31,8 +31,8 @@ public:
 
 	friend class MenuList;
 
-	void name(const char *name);
-	const char* name() const;
+	void setName(const char *name);
+	const char* getName();
 
 	bool hasFocus();
 
@@ -65,6 +65,7 @@ public:
 	MenuItem* deleteChild(MenuItem *child);
 
 	void sort();
+	void sort(const char* (MenuItem::*fn)());
 
 	void setDisplaySize(uint16_t size);
 

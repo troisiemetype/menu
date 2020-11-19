@@ -30,7 +30,7 @@ MenuItem::~MenuItem(){
 	free(_parent);
 }
 
-void MenuItem::name(const char *name){
+void MenuItem::setName(const char *name){
 	char *tmp = (char*)realloc(_name, strlen(name));
 	if(!tmp){
 		return;
@@ -39,7 +39,7 @@ void MenuItem::name(const char *name){
 	strcpy(_name, name);
 }
 
-const char* MenuItem::name() const{
+const char* MenuItem::getName(){
 	return _name;
 }
 
@@ -142,13 +142,35 @@ void MenuList::sort(){
 	uint16_t limit = _childrenSize - 1;
 //	Serial.printf("list size : %i\n", _childrenSize);
 	for(uint16_t i = 0; i < limit; ++i){
-//		Serial.printf("item %i : %s / %s\n", i, _children[i]->name(), _children[i + 1]->name());
-		int16_t result = strcmp(_children[i]->name(), _children[i + 1]->name());
+//		Serial.printf("item %i : %s / %s\n", i, _children[i]->getName(), _children[i + 1]->getName());
+		int16_t result = strcmp(_children[i]->getName(), _children[i + 1]->getName());
 		if(result > 0){
 			swap(i);
 			for(uint16_t j = i; j > 0; --j){
-//			Serial.printf("item %i : %s / %s\n", j, _children[j - 1]->name(), _children[j]->name());
-				result = strcmp(_children[j - 1]->name(), _children[j]->name());
+//			Serial.printf("item %i : %s / %s\n", j, _children[j - 1]->getName(), _children[j]->getName());
+				result = strcmp(_children[j - 1]->getName(), _children[j]->getName());
+				if(result > 0){
+					swap(j - 1);
+				} else {
+					break;
+				}
+			}
+		}
+	}
+}
+
+void MenuList::sort(const char* (MenuItem::*fn)()){
+//	(_children[]->*fn)();
+	uint16_t limit = _childrenSize - 1;
+//	Serial.printf("list size : %i\n", _childrenSize);
+	for(uint16_t i = 0; i < limit; ++i){
+//		Serial.printf("item %i : %s / %s\n", i, _children[i]->getName(), _children[i + 1]->getName());
+		int16_t result = strcmp((_children[i]->*fn)(), (_children[i + 1]->*fn)());
+		if(result > 0){
+			swap(i);
+			for(uint16_t j = i; j > 0; --j){
+//			Serial.printf("item %i : %s / %s\n", j, _children[j - 1]->getName(), _children[j]->getName());
+				result = strcmp((_children[j - 1]->*fn)(), (_children[j]->*fn)());
 				if(result > 0){
 					swap(j - 1);
 				} else {
