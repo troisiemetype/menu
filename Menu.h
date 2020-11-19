@@ -23,7 +23,6 @@
 
 class MenuItem;
 class MenuList;
-class MenuEntry;
 
 class MenuItem{
 public:
@@ -35,33 +34,25 @@ public:
 	void name(const char *name);
 	const char* name() const;
 
-	bool hasParent(MenuItem *parent);
-	bool hasParents();
-
 	bool hasFocus();
-//	MenuItem* focusItem();
-	MenuItem* focusNextItem();
-	MenuItem* focusPreviousItem();
 
-	MenuItem* getNextItem();
-	MenuItem* getPreviousItem();
+	MenuItem* getNext();
+	MenuItem* getPrevious();
 
+	virtual void exec();
 
-//	int16_t id();
+	void attachCallback(void (*cb)(void *data), void *data){_cb = cb; _cbData = data;}
+	void detachCallback(){_cb = NULL;}
 
 protected:
-	MenuItem* addParent(MenuList *parent);
-	MenuItem* removeParent(MenuList *parent);
-
-	virtual inline void caller(MenuList * list){_caller = list;};
+	MenuItem* giveParent(MenuList *parent);
 
 private:
-	bool _hasFocus;
+	MenuList *_parent;
 	char *_name;
-	uint16_t _parentsSize;
-	MenuList **_parents;
-	MenuList *_caller;
-//	int16_t _id;
+
+	void (*_cb)(void*);
+	void *_cbData;
 };
 
 class MenuList : public MenuItem {
@@ -73,19 +64,20 @@ public:
 	MenuItem* removeChild(MenuItem *child);
 	MenuItem* deleteChild(MenuItem *child);
 
+	void sort();
+
+	void setDisplaySize(uint16_t size);
+
 	MenuItem* getFocus();
 	MenuItem* focusNextItem();
 	MenuItem* focusPreviousItem();
+
+	MenuItem* getFirstDisplay();
 
 	MenuItem* getFirst();
 	MenuItem* getPrevious();
 	MenuItem* getNext();
 	MenuItem* getLast();
-
-	MenuItem* setFirst();
-	MenuItem* setPrevious();
-	MenuItem* setNext();
-	MenuItem* setLast();
 
 	bool hasChild(MenuItem *child);
 	bool hasChildren();
@@ -95,30 +87,19 @@ public:
 	MenuItem* enter();
 	MenuItem* exit();
 
+	void exec();
+
+protected:
+	void swap(uint16_t index);
+
 private:
 	uint16_t _focus;
 	uint16_t _index;
 	uint16_t _childrenSize;
 	MenuItem **_children;
 
-};
-
-class Menu : public MenuList{
-public:
-//	Menu();
-//	~Menu();
-
-	inline void displaySize(uint16_t size){_displaySize = size;};
-	inline uint16_t displaySize(){return _displaySize;};
-
-	MenuItem* firstItem();
-	MenuItem* previousItem();
-	MenuItem* nextItem();
-	MenuItem* lastItem();
-
-private:
-	uint16_t _displaySize;
-
+	uint16_t _indexDisplay;
+	static uint16_t _sizeDisplay;
 };
 
 #endif
