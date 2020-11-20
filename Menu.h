@@ -24,6 +24,9 @@
 class MenuItem;
 class MenuList;
 
+// size of MenuItem : 20 bytes (on esp32).
+// Size of MenuList : 36 bytes (ditto)
+
 class MenuItem{
 public:
 	MenuItem();
@@ -46,10 +49,12 @@ public:
 
 protected:
 	MenuItem* giveParent(MenuList *parent);
+	void allocateChar(const char *text, char **memberVar);
+	
+	char *_name;
 
 private:
 	MenuList *_parent;
-	char *_name;
 
 	void (*_cb)(void*);
 	void *_cbData;
@@ -58,7 +63,7 @@ private:
 class MenuList : public MenuItem {
 public:
 	MenuList();
-	virtual ~MenuList();
+	~MenuList();
 
 	MenuItem* addChild(MenuItem *child);
 	MenuItem* removeChild(MenuItem *child);

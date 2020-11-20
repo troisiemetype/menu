@@ -23,20 +23,15 @@
 MenuItem::MenuItem(){
 	_name = NULL;
 	_parent = NULL;
+//	allocateChar(" ", &_name)
 }
 
 MenuItem::~MenuItem(){
 	free(_name);
-	free(_parent);
 }
 
 void MenuItem::setName(const char *name){
-	char *tmp = (char*)realloc(_name, strlen(name));
-	if(!tmp){
-		return;
-	}
-	_name = tmp;
-	strcpy(_name, name);
+	allocateChar(name, &_name);
 }
 
 const char* MenuItem::getName(){
@@ -68,6 +63,17 @@ MenuItem* MenuItem::giveParent(MenuList *parent){
 	return this;
 }
 
+void MenuItem::allocateChar(const char *text, char **memberVar){
+	if(text == NULL) return;
+	char *tmp = (char*)realloc(*memberVar, strlen(text));
+	if(!tmp){
+		return;
+	}
+	*memberVar = tmp;
+	strcpy(*memberVar, text);
+	return;
+}
+
 // static members
 uint16_t MenuList::_sizeDisplay = -1;
 
@@ -82,7 +88,10 @@ MenuList::MenuList(){
 }
 
 MenuList::~MenuList(){
-
+	free(_name);
+	for(uint16_t i = 0; i < _childrenSize; ++i){
+		deleteChild(_children[i]);
+	}
 	free(_children);
 }
 
