@@ -27,6 +27,7 @@ class MenuList;
 // size of MenuItem : 20 bytes (on esp32).
 // Size of MenuList : 36 bytes (ditto)
 
+// TODO : change name for getNext / getPrevious, so there is no misundrastanding of which is called.
 class MenuItem{
 public:
 	MenuItem();
@@ -71,6 +72,7 @@ public:
 
 	void sort();
 	void sort(const char* (MenuItem::*fn)());
+	void sortExternal(int16_t (*fn)(MenuItem*, MenuItem*));
 
 	void setDisplaySize(uint16_t size);
 

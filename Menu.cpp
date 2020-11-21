@@ -23,7 +23,7 @@
 MenuItem::MenuItem(){
 	_name = NULL;
 	_parent = NULL;
-//	allocateChar(" ", &_name)
+	allocateChar(" ", &_name);
 }
 
 MenuItem::~MenuItem(){
@@ -65,7 +65,7 @@ MenuItem* MenuItem::giveParent(MenuList *parent){
 
 void MenuItem::allocateChar(const char *text, char **memberVar){
 	if(text == NULL) return;
-	char *tmp = (char*)realloc(*memberVar, strlen(text));
+	char *tmp = (char*)realloc(*memberVar, strlen(text) + 1);
 	if(!tmp){
 		return;
 	}
@@ -188,6 +188,25 @@ void MenuList::sort(const char* (MenuItem::*fn)()){
 			}
 		}
 	}
+}
+
+void MenuList::sortExternal(int16_t (*fn)(MenuItem*, MenuItem*)){
+	uint16_t limit = _childrenSize - 1;
+	for(uint16_t i = 0; i < limit; ++i){
+		int16_t result = fn(_children[i], _children[i + 1]);
+		if(result > 0){
+			swap(i);
+			for(uint16_t j = i; j > 0; --j){
+				result = fn(_children[j - 1], _children[j]);
+				if(result > 0){
+					swap(j - 1);
+				} else {
+					break;
+				}
+			}
+		}
+	}
+
 }
 
 void MenuList::setDisplaySize(uint16_t size){
