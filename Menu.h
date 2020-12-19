@@ -55,12 +55,14 @@ public:
 
 protected:
 	MenuItem* giveParent(MenuList *parent);
+	void giveIndex(uint16_t index);
 	void allocateChar(const char *text, char **memberVar);
 	
 	char *_name;
 
 private:
 	MenuList *_parent;
+	uint16_t _childIndex;
 
 	void (*_cb)(void*);
 	void *_cbData;
@@ -71,6 +73,8 @@ class MenuList : public MenuItem {
 public:
 	MenuList();
 	~MenuList();
+
+	friend class MenuItem;
 
 	MenuItem* addChild(MenuItem *child);
 	MenuItem* removeChild(MenuItem *child);
@@ -104,6 +108,9 @@ public:
 
 protected:
 	void swap(uint16_t index);
+
+	MenuItem* getNextChild(uint16_t index);
+	MenuItem* getPrevChild(uint16_t index);
 
 private:
 	uint16_t _focus;

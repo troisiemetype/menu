@@ -24,6 +24,8 @@ MenuItem::MenuItem(){
 	_name = NULL;
 	_parent = NULL;
 	_data = NULL;
+	_cb = NULL;
+	_cbData = NULL;
 	allocateChar(" ", &_name);
 }
 
@@ -62,12 +64,12 @@ bool MenuItem::hasFocus(){
 
 MenuItem* MenuItem::getNext(){
 	if(!_parent) return NULL;
-	return _parent->getNext();
+	return _parent->getNextChild(_childIndex);
 }
 
 MenuItem* MenuItem::getPrevious(){
 	if(!_parent) return NULL;
-	return _parent->getPrevious();
+	return _parent->getPrevChild(_childIndex);
 }
 
 void MenuItem::exec(){
@@ -78,6 +80,10 @@ void MenuItem::exec(){
 MenuItem* MenuItem::giveParent(MenuList *parent){
 	_parent = parent;
 	return this;
+}
+
+void MenuItem::giveIndex(uint16_t index){
+	_childIndex = index;
 }
 
 void MenuItem::allocateChar(const char *text, char **memberVar){
@@ -121,6 +127,7 @@ MenuItem* MenuList::addChild(MenuItem *child){
 	}
 
 	child->giveParent(this);
+	child->giveIndex(_childrenSize - 1);
 	_children = tmp;
 	_children[_childrenSize - 1] = child;
 	return child;
@@ -304,4 +311,17 @@ void MenuList::swap(uint16_t index){
 	tmp = _children[index];
 	_children[index] = _children[index + 1];
 	_children[index + 1] = tmp;
+
+	_children[index]->giveIndex(index);
+	_children[index + 1]->giveIndex(index +1);
+}
+
+MenuItem* MenuList::getNextChild(uint16_t index){
+	if(index < (_childrenSize - 1)) return _children[index + 1];
+	return NULL;
+}
+
+MenuItem* MenuList::getPrevChild(uint16_t index){
+	if(index > 0) return _children[index - 1];
+	return NULL;
 }
