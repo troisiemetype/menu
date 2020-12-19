@@ -54,7 +54,7 @@ MenuItem* MenuItem::getPrevious(){
 }
 
 void MenuItem::exec(){
-	if(_cb) _cb(NULL);
+	if(_cb) _cb(_cbData);
 }
 
 //Protected
