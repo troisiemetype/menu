@@ -27,7 +27,7 @@ class MenuList;
 // size of MenuItem : 20 bytes (on esp32).
 // Size of MenuList : 36 bytes (ditto)
 
-// TODO : change name for getNext / getPrevious, so there is no misundrastanding of which is called.
+// TODO : change name for getNext / getPrevious, so there is no misunderstanding of which is called.
 class MenuItem{
 public:
 	MenuItem();
@@ -35,7 +35,12 @@ public:
 
 	friend class MenuList;
 
+	void attachData(void *data);
+	void deattachData();
+	void *getData();
+
 	void setName(const char *name);
+	void attachName(const char *name);
 	const char* getName();
 
 	bool hasFocus();
@@ -45,8 +50,8 @@ public:
 
 	virtual void exec();
 
-	void attachCallback(void (*cb)(void *data), void *data){_cb = cb; _cbData = data;}
-	void detachCallback(){_cb = NULL;}
+	void attachCallback(void (*cb)(void*), void *data){_cb = cb; _cbData = data;}
+	void deattachCallback(){_cb = NULL;}
 
 protected:
 	MenuItem* giveParent(MenuList *parent);
@@ -59,6 +64,7 @@ private:
 
 	void (*_cb)(void*);
 	void *_cbData;
+	void *_data;
 };
 
 class MenuList : public MenuItem {
@@ -71,7 +77,6 @@ public:
 	MenuItem* deleteChild(MenuItem *child);
 
 	void sort();
-	void sort(const char* (MenuItem::*fn)());
 	void sortExternal(int16_t (*fn)(MenuItem*, MenuItem*));
 
 	void setDisplaySize(uint16_t size);

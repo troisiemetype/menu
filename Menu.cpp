@@ -23,6 +23,7 @@
 MenuItem::MenuItem(){
 	_name = NULL;
 	_parent = NULL;
+	_data = NULL;
 	allocateChar(" ", &_name);
 }
 
@@ -30,8 +31,24 @@ MenuItem::~MenuItem(){
 	free(_name);
 }
 
+void MenuItem::attachData(void *data){
+	_data = data;
+}
+
+void MenuItem::deattachData(){
+	_data = NULL;
+}
+
+void* MenuItem::getData(){
+	return _data;
+}
+
 void MenuItem::setName(const char *name){
 	allocateChar(name, &_name);
+}
+
+void MenuItem::attachName(const char *name){
+	_name = (char*)name;
 }
 
 const char* MenuItem::getName(){
@@ -158,28 +175,6 @@ void MenuList::sort(){
 			for(uint16_t j = i; j > 0; --j){
 //			Serial.printf("item %i : %s / %s\n", j, _children[j - 1]->getName(), _children[j]->getName());
 				result = strcmp(_children[j - 1]->getName(), _children[j]->getName());
-				if(result > 0){
-					swap(j - 1);
-				} else {
-					break;
-				}
-			}
-		}
-	}
-}
-
-void MenuList::sort(const char* (MenuItem::*fn)()){
-//	(_children[]->*fn)();
-	uint16_t limit = _childrenSize - 1;
-//	Serial.printf("list size : %i\n", _childrenSize);
-	for(uint16_t i = 0; i < limit; ++i){
-//		Serial.printf("item %i : %s / %s\n", i, _children[i]->getName(), _children[i + 1]->getName());
-		int16_t result = strcmp((_children[i]->*fn)(), (_children[i + 1]->*fn)());
-		if(result > 0){
-			swap(i);
-			for(uint16_t j = i; j > 0; --j){
-//			Serial.printf("item %i : %s / %s\n", j, _children[j - 1]->getName(), _children[j]->getName());
-				result = strcmp((_children[j - 1]->*fn)(), (_children[j]->*fn)());
 				if(result > 0){
 					swap(j - 1);
 				} else {
