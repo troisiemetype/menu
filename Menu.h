@@ -48,10 +48,12 @@ public:
 	MenuItem* getNext();
 	MenuItem* getPrevious();
 
+	MenuList* getParent();
+
 	virtual void exec();
 
 	void attachCallback(void (*cb)(void*), void *data){_cb = cb; _cbData = data;}
-	void deattachCallback(){_cb = NULL;}
+	void deattachCallback(){_cb = NULL; _cbData = NULL;}
 
 protected:
 	MenuItem* giveParent(MenuList *parent);

@@ -72,6 +72,10 @@ MenuItem* MenuItem::getPrevious(){
 	return _parent->getPrevChild(_childIndex);
 }
 
+MenuList* MenuItem::getParent(){
+	return _parent;
+}
+
 void MenuItem::exec(){
 	if(_cb) _cb(_cbData);
 }
@@ -172,6 +176,7 @@ MenuItem* MenuList::deleteChild(MenuItem * child){
 }
 
 void MenuList::sort(){
+	if(_childrenSize < 2) return;
 	uint16_t limit = _childrenSize - 1;
 //	Serial.printf("list size : %i\n", _childrenSize);
 	for(uint16_t i = 0; i < limit; ++i){
@@ -193,6 +198,7 @@ void MenuList::sort(){
 }
 
 void MenuList::sortExternal(int16_t (*fn)(MenuItem*, MenuItem*)){
+	if(_childrenSize < 2) return;
 	uint16_t limit = _childrenSize - 1;
 	for(uint16_t i = 0; i < limit; ++i){
 		int16_t result = fn(_children[i], _children[i + 1]);
