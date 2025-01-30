@@ -278,6 +278,16 @@ MenuItem* MenuList::getLast(){
 	return _children[_index];
 }
 
+MenuItem* MenuList::getChildAt(uint16_t index){
+	if(!hasChildren()) return NULL;
+	if(index < _childrenSize){
+		_index = index;
+		return _children[index];
+	}
+	return NULL;
+}
+
+
 bool MenuList::hasChild(MenuItem *child){
 	for(uint16_t i = 0; i < _childrenSize; ++i){
 		if(_children[i] == child) return true;

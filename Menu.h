@@ -98,6 +98,8 @@ public:
 	MenuItem* getNext();
 	MenuItem* getLast();
 
+	MenuItem* getChildAt(uint16_t index);
+
 	bool hasChild(MenuItem *child);
 	bool hasChildren();
 	
